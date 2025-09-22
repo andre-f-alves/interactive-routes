@@ -148,6 +148,7 @@
         <button class="route-btn" data-route-key="home-tendaSupermarket">Home &rarr; Tenda Supermarket</button>
         <button class="route-btn" data-route-key="home-hospital">Home &rarr; Hospital</button>
         <button class="route-btn" data-route-key="home-drugstore">Home &rarr; Farma Conde Drugstore</button>
+        <button class="route-btn" data-route-key="streetShops">Street Shops</button>
     
         <div class="route-descriptions">
           <p class="empty-selection">
@@ -275,13 +276,6 @@
             </ol>
           </div>
 
-          <div id="-route" class="route">
-            <h3>Street Shops:</h3>
-            <p>
-              There are many Street stores (clothing, shoe, utility and electronics stores) on Anchieta Avenue in the stretch between Oswaldo Cruz Street and Dezenove de Maio Avenue, and also on the Dezenove de Maio Avenue, in the stretch between Anchieta Avenue and Governador Mário Covas Highway.
-            </p>
-          </div>
-
           <div id="home-hospital-route" class="route">
             <h3>Home &rarr; Hospital:</h3>
             <ol>
@@ -304,6 +298,13 @@
               <li>Go straight ahead;</li>
               <li>To reach the drugstore, cross Anchieta Avenue.</li>
             </ol>
+          </div>
+
+          <div id="streetShops-route" class="route">
+            <h3>Street Shops:</h3>
+            <p>
+              There are many Street stores (clothing, shoe, utility and electronics stores) on Anchieta Avenue in the stretch between Oswaldo Cruz Street and Dezenove de Maio Avenue, and also on the Dezenove de Maio Avenue, in the stretch between Anchieta Avenue and Governador Mário Covas Highway.
+            </p>
           </div>
         </div>
       </div>
@@ -365,6 +366,10 @@
       'home-drugstore': {
         mapUrl: 'https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d3649.456869272499!2d-46.13850208840803!3d-23.837905221722412!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e2!4m5!1s0x94cdfc7befd266dd%3A0x9137991e2ec7f38!2sCondominio%20Myrela%20Mary%2C%20R.%20Ayrton%20Senna%20da%20Silva%2C%20176-254%20-%20Jd%20Paulista%2C%20Bertioga%20-%20SP%2C%2011250-000!3m2!1d-23.8356429!2d-46.1382689!4m5!1s0x94cdfd26079b43c3%3A0xb311b0e21927c62e!2sFarma%20Conde%20-%20Avenida%20Anchieta%20-%20Jd.%20Oswaldo%20Cruz%20II%2C%20Bertioga%20-%20SP!3m2!1d-23.8403855!2d-46.1336897!5e0!3m2!1spt-BR!2sbr!4v1758551783281!5m2!1spt-BR!2sbr',
       },
+
+      'streetShops': {
+        mapUrl: 'https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d5161.171812449342!2d-46.136249679186605!3d-23.836387290387396!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e2!4m3!3m2!1d-23.840048799999998!2d-46.1339024!4m3!3m2!1d-23.8365995!2d-46.130394599999995!4m3!3m2!1d-23.8287482!2d-46.137681!5e0!3m2!1spt-BR!2sbr!4v1758569023532!5m2!1spt-BR!2sbr',
+      }
     }
 
     function showRoute(key) {
@@ -374,6 +379,7 @@
       })
       document.getElementById('map').src = routes[key].mapUrl
       document.getElementById(`${key}-route`).style.display = 'block'
+      document.querySelector('.routes-container').scro
     }
 
     document.querySelectorAll('.route-btn').forEach(btn => {
