@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Routes</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100dvh;
+      margin: 0;
+      padding: 0;
+    }
+
+    main {
+      position: relative;
+      display: flex;
+      height: 100%;
+      font-family: Arial, sans-serif;
+    }
+    
+    .routes {
+      position: fixed;
+      transform: translateX(-100%);
+      display: flex;
+      flex-direction: column;
+      width: 60vw;
+      height: 100%;
+      padding-top: 20px;
+      background-color: white;
+      transition: transform .3s ease-in-out;
+    }
+
+    .routes.active {
+      transform: translateX(0);
+      box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .routes h2 {
+      padding: 0 20px;
+    }
+    
+    .routes button {
+      display: block;
+      margin-bottom: 10px;
+      padding: 10px;
+      width: 100%;
+      cursor: pointer;
+      border: none;
+      border-radius: 8px;
+      background-color: #1976d2;
+      color: white;
+      font-weight: bold;
+    }
+    
+    .routes button:hover,
+    .sidebar-btn:hover {
+      background-color: #1565c0;
+    }
+
+    .routes-container {
+      height: 100%;
+      overflow-y: auto;
+      padding: 20px;
+      padding-top: 0;
+    }
+
+    .route-descriptions {
+      margin-top: 20px;
+      padding: 10px;
+      border-radius: 8px;
+      background: #f5f5f5;
+      line-height: 1.6;
+    }
+
+    .empty-selection {
+      color: #636363;
+      font-style: italic;
+    }
+
+    .route {
+      display: none;
+    }
+
+    .sidebar-btn {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      transform: translateY(-50%);
+      width: min-content;
+      height: 100px;
+      border: none;
+      border-radius: 0 12px 12px 0;
+      transition: left .3s ease-in-out;
+      font-weight: bold;
+      background-color: #1976d2;
+      color: white;
+      cursor: pointer;
+    }
+
+    .routes.active ~ .sidebar-btn {
+      left: 60vw;
+    }
+
+    #map {
+      width: 100%;
+      height: 100%;
+      border-radius: 0;
+      border: 1px solid #ccc;
+    }
+
+    @media screen and (min-width: 1024px) {
+      .routes {
+        position: relative;
+        width: 30vw;
+        transform: translateX(0);
+        box-shadow: none;
+      }
+
+      .sidebar-btn {
+        display: none;
+      }
+      
+      #map {
+        width: calc(70vw);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <main>
+    <div class="routes">
+      <h2>Select a Route</h2>
+
+      <div class="routes-container">
+        <button class="route-btn" data-route-key="busStation-home">Bus Station &rarr; Home</button>
+        <button class="route-btn" data-route-key="home-school">Home &rarr; School</button>
+        <button class="route-btn" data-route-key="home-carlotaLanches">Home &rarr; Carlota Lanches</button>
+        <button class="route-btn" data-route-key="home-bakery">Home &rarr; Pão de Mel Bakery</button>
+        <button class="route-btn" data-route-key="home-caravelasRestaurant">Home &rarr; Caravelas Restaurant</button>
+        <button class="route-btn" data-route-key="home-burgerKing">Home &rarr; Burger King</button>
+        <button class="route-btn" data-route-key="home-semarSupermarket">Home &rarr; Semar Supermarket</button>
+        <button class="route-btn" data-route-key="home-krillSupermarket">Home &rarr; Krill Supermarket</button>
+        <button class="route-btn" data-route-key="home-tendaSupermarket">Home &rarr; Tenda Supermarket</button>
+        <button class="route-btn" data-route-key="home-hospital">Home &rarr; Hospital</button>
+        <button class="route-btn" data-route-key="home-drugstore">Home &rarr; Farma Conde Drugstore</button>
+    
+        <div class="route-descriptions">
+          <p class="empty-selection">
+            Select a route to see the directions...
+          </p>
+    
+          <div id="busStation-home-route" class="route">
+            <h3>Bus Station &rarr; Home (Myrela Mary Condominium):</h3>
+            <ol>
+              <li>Leaving the bus station, turn left;</li>
+              <li>Go straight ahead to Marginal Avenue;</li>
+              <li>Turn right onto Marginal Avenue;</li>
+              <li>Go straight ahead;</li>
+              <li>Turn left at the first intersection to take the parallel highway Governador Mário Covas;</li>
+              <li>Cross the Governador Mário Covas Highway;</li>
+              <li>Turn left;</li>
+              <li>Go straight ahead;</li>
+              <li>Turn left at the first intersection to take the parallel avenue Bruno Covas;</li>
+              <li>Go straight ahead to the bus stop;</li>
+              <li>Wait for bus number 961;</li>
+              <li>Get off at the bus stop in front of the Semar supermarket (Anchieta Avenue);</li>
+              <li>Turn left;</li>
+              <li>Go straight ahead to Manoel Gajo Street;</li>
+              <li>Turn right onto Manoel Gajo Street;</li>
+              <li>Go four blocks;</li>
+              <li>Turn left onto Ayrton Senna da Silva Street</li>
+              <li>Go three blocks (the condominium is on the third block).</li>
+            </ol>
+          </div>
+
+          <div id="home-school-route" class="route">
+            <h3>Home &rarr; School (Objetivo College):</h3>
+            <ol>
+              <li>Leaving the condominium, turn right;</li>
+              <li>Go five blocks;</li>
+              <li>Turn left onto John Wolthers Street;</li>
+              <li>Go straight ahead;</li>
+              <li>Turn left onto Antônio Saldanha Street;</li>
+              <li>Follow the street;</li>
+              <li>Turn right at the first corner (Manoel da Nóbrega Avenue);</li>
+              <li>Cross the street.</li>
+            </ol>
+          </div>
+
+          <div id="home-carlotaLanches-route" class="route">
+            <h3>Home &rarr; Carlota Lanches:</h3>
+            <ol>
+              <li>Leaving the condominum, turn right;</li>
+              <li>Cross General Osório Street;</li>
+              <li>The Carlota Lanches is on the corner.</li>
+            </ol>
+          </div>
+
+          <div id="home-bakery-route" class="route">
+            <h3>Home &rarr; Pão de Mel Bakery:</h3>
+            <ol>
+              <li>Leaving the condominum, turn right;</li>
+              <li>Go one block;</li>
+              <li>Cross Oswaldo Cruz Street;</li>
+              <li>The Pão de Mel bakery is on the corner.</li>
+            </ol>
+          </div>
+
+          <div id="home-caravelasRestaurant-route" class="route">
+            <h3>Home &rarr; Caravelas Restaurant:</h3>
+            <ol>
+              <li>Leaving the condominium, turn right;</li>
+              <li>Go five blocks;</li>
+              <li>Turn left onto John Wolthers Street;</li>
+              <li>Go two blocks;</li>
+              <li>Turn right onto Cláudio Cezar de Aguiar Mauriz Street;</li>
+              <li>Go four blocks to Vicente Molinari Square;</li>
+              <li>Follow the street to the corner of Vicente Molinari Square and Cláudio Cezar de Aguiar Mauriz Street, in front of the hospital parking lot.</li>
+            </ol>
+          </div>
+
+          <div id="home-burgerKing-route" class="route">
+            <h3>Home &rarr; Burger King:</h3>
+            <ol>
+              <li>Leaving the condominium, turn left;</li>
+              <li>Go straight ahead;</li>
+              <li>Turn right onto Dr. Rodrigues Alves Street;</li>
+              <li>Go four blocks;</li>
+              <li>Cross Anchieta Avenue;</li>
+              <li>Turn left;</li>
+              <li>Go straight ahead until the roundabout in front of the Krill supermarket;</li>
+              <li>Cross Dezenove de Maio Avenue;</li>
+              <li>Burger King is on the corner.</li>
+            </ol>
+          </div>
+
+          <div id="home-semarSupermarket-route" class="route">
+            <h3>Home &rarr; Semar Supermarket:</h3>
+            <ol>
+              <li>Leaving the condominium, turn left;</li>
+              <li>Go straight ahead;</li>
+              <li>Turn right onto Dr. Rodrigues Alves Street;</li>
+              <li>Go four blocks;</li>
+              <li>Turn left onto Anchieta Avenue;</li>
+              <li>Go straight ahead to the Semar supermarket (in the third block).</li>
+            </ol>
+          </div>
+
+          <div id="home-krillSupermarket-route" class="route">
+            <h3>Home &rarr; Krill Supermarket:</h3>
+            <ol>
+              <li>Leaving the condominium, turn left;</li>
+              <li>Go straight ahead;</li>
+              <li>Turn right onto Dr. Rodrigues Alves Street;</li>
+              <li>Go four blocks;</li>
+              <li>Cross Anchieta Avenue;</li>
+              <li>Turn left;</li>
+              <li>Go straight ahead to the Krill supermarket (on the corner of Anchieta Avenue and Dezenove de Maio Avenue).</li>
+            </ol>
+          </div>
+
+          <div id="home-tendaSupermarket-route" class="route">
+            <h3>Home &rarr; Tenda Supermarket:</h3>
+            <ol>
+              <li>Leaving the condominium, turn left;</li>
+              <li>Go straight ahead;</li>
+              <li>Turn left onto Manoel Gajo Street;</li>
+              <li>Go straight ahead;</li>
+              <li>The Tenda supermarket is located on the corner of Manoel Gajo Street and Governador Mário Covas Highway.</li>
+            </ol>
+          </div>
+
+          <div id="-route" class="route">
+            <h3>Street Shops:</h3>
+            <p>
+              There are many Street stores (clothing, shoe, utility and electronics stores) on Anchieta Avenue in the stretch between Oswaldo Cruz Street and Dezenove de Maio Avenue, and also on the Dezenove de Maio Avenue, in the stretch between Anchieta Avenue and Governador Mário Covas Highway.
+            </p>
+          </div>
+
+          <div id="home-hospital-route" class="route">
+            <h3>Home &rarr; Hospital:</h3>
+            <ol>
+              <li>Leaving the condominium, turn right;</li>
+              <li>Go five blocks;</li>
+              <li>Turn left onto John Wolthers Street;</li>
+              <li>Go two blocks;</li>
+              <li>Turn right onto Cláudio Cezar de Aguiar Mauriz Street;</li>
+              <li>Go four blocks to Vicente Molinari Square;</li>
+              <li>Follow the street to the hospital entrance.</li>
+            </ol>
+          </div>
+
+          <div id="home-drugstore-route" class="route">
+            <h3>Home &rarr; Farma Conde Drugstore:</h3>
+            <ol>
+              <li>Leaving the condominium, turn right;</li>
+              <li>Go one block;</li>
+              <li>Turn left onto Oswaldo Cruz Street;</li>
+              <li>Go straight ahead;</li>
+              <li>To reach the drugstore, cross Anchieta Avenue.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button id="sidebar-btn" class="sidebar-btn" title="Open side panel">&raquo;</button>
+
+    <iframe id="map"
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d233644.7676263421!2d-46.17999078048582!3d-23.793713014887206!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94cdf0e312011589%3A0x30bcbbea6208aea8!2sBertioga%2C%20SP!5e0!3m2!1spt-BR!2sbr!4v1758562772159!5m2!1spt-BR!2sbr"
+      loading="lazy"
+      allowfullscreen
+      referrerpolicy="no-referrer-when-downgrade"
+      >
+    </iframe>
+  </main>
+
+  <script>
+    const routes = {
+      'busStation-home': {
+        mapUrl: 'https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d29197.788958880294!2d-46.13008019428323!3d-23.828425118150967!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e3!4m5!1s0x94cdfaf16ca11afb%3A0xb3088aae49a2cdb9!2sRodoviaria%20de%20Bertioga%2C%20Av.%20Marginal%2C%20456-930%20-%20Jardim%20Rafael%2C%20Bertioga%20-%20SP%2C%2011250-000!3m2!1d-23.8039097!2d-46.0808013!4m5!1s0x94cdfc7befd266dd%3A0x9137991e2ec7f38!2sCondominio%20Myrela%20Mary%20-%20Rua%20Ayrton%20Senna%20da%20Silva%20-%20Jd%20Paulista%2C%20Bertioga%20-%20SP!3m2!1d-23.8356429!2d-46.1382689!5e0!3m2!1spt-BR!2sbr!4v1758554117909!5m2!1spt-BR!2sbr',
+      },
+
+      'home-school': {
+        mapUrl: 'https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d3649.4215936987875!2d-46.13969558840804!3d-23.8391586217689!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e2!4m5!1s0x94cdfc7befd266dd%3A0x9137991e2ec7f38!2sCondominio%20Myrela%20Mary%2C%20R.%20Ayrton%20Senna%20da%20Silva%2C%20176-254%20-%20Jd%20Paulista%2C%20Bertioga%20-%20SP%2C%2011250-000!3m2!1d-23.8356429!2d-46.1382689!4m5!1s0x94cdfc76e930eb61%3A0x4fb2f0d7ba9d7404!2sColegio%20objetivo%20-%20Escola%20particular%20-%20Avenida%20Manoel%20da%20N%C3%B3brega%20-%20Centervalle%2C%20Bertioga%20-%20SP!3m2!1d-23.8423066!2d-46.1359437!5e0!3m2!1spt-BR!2sbr!4v1758551938556!5m2!1spt-BR!2sbr',
+      },
+
+      'home-carlotaLanches' : {
+        mapUrl: 'https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d3649.5162447515786!2d-46.140944688407885!3d-23.83579537164389!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e2!4m5!1s0x94cdfc7befd266dd%3A0x9137991e2ec7f38!2sCondominio%20Myrela%20Mary%2C%20R.%20Ayrton%20Senna%20da%20Silva%2C%20176-254%20-%20Jd%20Paulista%2C%20Bertioga%20-%20SP%2C%2011250-000!3m2!1d-23.8356429!2d-46.1382689!4m5!1s0x94cdfd24903dffc1%3A0x2c0a6b3d4558135a!2sCarlota%20Lanches%20-%20Rua%20Ayrton%20Senna%20da%20Silva%20-%20Centro%2C%20Bertioga%20-%20SP!3m2!1d-23.8358576!2d-46.1385447!5e0!3m2!1spt-BR!2sbr!4v1758553044947!5m2!1spt-BR!2sbr',
+      },
+
+      'home-bakery': {
+        mapUrl: 'https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d3649.5099256922376!2d-46.141219738408026!3d-23.83601992165232!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e2!4m5!1s0x94cdfc7befd266dd%3A0x9137991e2ec7f38!2sCondominio%20Myrela%20Mary%2C%20R.%20Ayrton%20Senna%20da%20Silva%2C%20176-254%20-%20Jd%20Paulista%2C%20Bertioga%20-%20SP%2C%2011250-000!3m2!1d-23.8356429!2d-46.1382689!4m5!1s0x94cdfc7b9123123d%3A0x39e0ce8a9a3f3f73!2sPadaria%20P%C3%A3o%20de%20Mel%20-%20Rua%20Ayrton%20Senna%20da%20Silva%20-%20Jd%20Paulista%2C%20Bertioga%20-%20SP!3m2!1d-23.836339!2d-46.1390266!5e0!3m2!1spt-BR!2sbr!4v1758553140887!5m2!1spt-BR!2sbr',
+      },
+
+      'home-caravelasRestaurant': {
+        mapUrl: 'https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d3649.4162110228963!2d-46.14206968840795!3d-23.839349871776033!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e2!4m5!1s0x94cdfc7befd266dd%3A0x9137991e2ec7f38!2sCondominio%20Myrela%20Mary%2C%20R.%20Ayrton%20Senna%20da%20Silva%2C%20176-254%20-%20Jd%20Paulista%2C%20Bertioga%20-%20SP%2C%2011250-000!3m2!1d-23.8356429!2d-46.1382689!4m5!1s0x94cdfc70536a35f5%3A0xe11c4c70e46b58aa!2sRestaurante%20Caravelas%20-%20Pra%C3%A7a%20Vicente%20Molinari%20-%20Centerville%2C%20Bertioga%20-%20SP!3m2!1d-23.8430556!2d-46.1402778!5e0!3m2!1spt-BR!2sbr!4v1758552856811!5m2!1spt-BR!2sbr',
+      },
+
+      'home-burgerKing': {
+        mapUrl: 'https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d3649.491335429119!2d-46.13629313840805!3d-23.836680521676914!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e2!4m5!1s0x94cdfc7befd266dd%3A0x9137991e2ec7f38!2sCondominio%20Myrela%20Mary%2C%20R.%20Ayrton%20Senna%20da%20Silva%2C%20176-254%20-%20Jd%20Paulista%2C%20Bertioga%20-%20SP%2C%2011250-000!3m2!1d-23.8356429!2d-46.1382689!4m5!1s0x94cdfb3c18f86e01%3A0xc141213e12751a37!2sBurger%20King%20-%20Avenida%20Anchieta%20-%20Albatroz%2C%20Bertioga%20-%20SP!3m2!1d-23.8362971!2d-46.129170699999996!5e0!3m2!1spt-BR!2sbr!4v1758552925603!5m2!1spt-BR!2sbr',
+      },
+
+      'home-semarSupermarket': {
+        mapUrl: 'https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d3068.8280087237163!2d-46.13544588789409!3d-23.837363933634023!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e2!4m5!1s0x94cdfc7befd266dd%3A0x9137991e2ec7f38!2sCondominio%20Myrela%20Mary%2C%20R.%20Ayrton%20Senna%20da%20Silva%2C%20176-254%20-%20Jd%20Paulista%2C%20Bertioga%20-%20SP%2C%2011250-000!3m2!1d-23.8356429!2d-46.1382689!4m5!1s0x94cdfb9167f1f3f9%3A0x61d4bcbfe795656c!2sSemar%20Supermercados%20-%20Bertioga%20-%20Avenida%20Anchieta%20-%20Jardim%20Albatroz%2C%20Bertioga%20-%20SP!3m2!1d-23.8373074!2d-46.132172499999996!5e0!3m2!1spt-BR!2sbr!4v1758553370630!5m2!1spt-BR!2sbr',
+      },
+      
+      'home-krillSupermarket': {
+        mapUrl: 'https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d3649.491335429123!2d-46.13674833840798!3d-23.836680521676747!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e2!4m5!1s0x94cdfc7befd266dd%3A0x9137991e2ec7f38!2sCondominio%20Myrela%20Mary%2C%20R.%20Ayrton%20Senna%20da%20Silva%2C%20176-254%20-%20Jd%20Paulista%2C%20Bertioga%20-%20SP%2C%2011250-000!3m2!1d-23.8356429!2d-46.1382689!4m5!1s0x94cdfc71cb84a683%3A0xfed62d7d772eecf6!2sSupermercado%20Rede%20Krill%20-%20Avenida%20Anchieta%20-%20Jardim%20Albatroz%2C%20Bertioga%20-%20SP!3m2!1d-23.8373413!2d-46.1300811!5e0!3m2!1spt-BR!2sbr!4v1758553463678!5m2!1spt-BR!2sbr',
+      },
+      
+      'home-tendaSupermarket': {
+        mapUrl: 'https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d3649.5869367253763!2d-46.14074993840819!3d-23.833283171550644!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e2!4m5!1s0x94cdfc7befd266dd%3A0x9137991e2ec7f38!2sCondominio%20Myrela%20Mary%2C%20R.%20Ayrton%20Senna%20da%20Silva%2C%20176-254%20-%20Jd%20Paulista%2C%20Bertioga%20-%20SP%2C%2011250-000!3m2!1d-23.8356429!2d-46.1382689!4m5!1s0x94cdfd2c356dda3f%3A0xb06ac1c48237588f!2sTenda%20Atacado%20-%20Bertioga%20-%20Avenida%20Marginal%20Sul%20-%20Rio-Santos%20-%20Jardim%20Vicente%20de%20Carvalho%2C%20Bertioga%20-%20SP!3m2!1d-23.830845!2d-46.139212199999996!5e0!3m2!1spt-BR!2sbr!4v1758553509114!5m2!1spt-BR!2sbr',
+      },
+      
+      'home-hospital': {
+        mapUrl: 'https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d1290.2931583897666!2d-46.13943316250602!3d-23.836366658508148!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e2!4m5!1s0x94cdfc7befd266dd%3A0x9137991e2ec7f38!2sCondominio%20Myrela%20Mary%2C%20R.%20Ayrton%20Senna%20da%20Silva%2C%20176-254%20-%20Jd%20Paulista%2C%20Bertioga%20-%20SP%2C%2011250-000!3m2!1d-23.8356429!2d-46.1382689!4m5!1s0x94cdfc7100051fa1%3A0x74d98c736e44dd0c!2sHospital%20Bertioga%20Santa%20Teresinha%20-%20Pra%C3%A7a%20Vicente%20Molinari%20-%20Vila%20Itapanha%C3%BA%2C%20Bertioga%20-%20SP!3m2!1d-23.8429362!2d-46.1396987!5e0!3m2!1spt-BR!2sbr!4v1758551496906!5m2!1spt-BR!2sbr',
+      },
+      
+      'home-drugstore': {
+        mapUrl: 'https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d3649.456869272499!2d-46.13850208840803!3d-23.837905221722412!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e2!4m5!1s0x94cdfc7befd266dd%3A0x9137991e2ec7f38!2sCondominio%20Myrela%20Mary%2C%20R.%20Ayrton%20Senna%20da%20Silva%2C%20176-254%20-%20Jd%20Paulista%2C%20Bertioga%20-%20SP%2C%2011250-000!3m2!1d-23.8356429!2d-46.1382689!4m5!1s0x94cdfd26079b43c3%3A0xb311b0e21927c62e!2sFarma%20Conde%20-%20Avenida%20Anchieta%20-%20Jd.%20Oswaldo%20Cruz%20II%2C%20Bertioga%20-%20SP!3m2!1d-23.8403855!2d-46.1336897!5e0!3m2!1spt-BR!2sbr!4v1758551783281!5m2!1spt-BR!2sbr',
+      },
+    }
+
+    function showRoute(key) {
+      document.querySelector('.empty-selection').style.display = 'none'
+      document.querySelectorAll('.route').forEach(route => {
+        route.style.display = 'none'
+      })
+      document.getElementById('map').src = routes[key].mapUrl
+      document.getElementById(`${key}-route`).style.display = 'block'
+    }
+
+    document.querySelectorAll('.route-btn').forEach(btn => {
+      btn.addEventListener('click', () => showRoute(btn.dataset.routeKey))
+    })
+
+    document.getElementById('sidebar-btn').addEventListener('click', () => {
+      const routesElement = document.querySelector('.routes')
+      routesElement.classList.toggle('active')
+      const btn = document.getElementById('sidebar-btn')
+      btn.innerHTML = routesElement.classList.contains('active') ? '&laquo;' : '&raquo;'
+      btn.title = routesElement.classList.contains('active') ? 'Close side panel' : 'Open side panel'
+    })
+  </script>
+
+</body>
+</html>
